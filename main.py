@@ -1,18 +1,27 @@
 from fastapi import FastAPI
-import os
-import psycopg2
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+# List of URLs allowed to access your backend
+origins = [
+    "http://localhost:3000",  # local frontend dev URL
+    "https://bbscashflow-frontend.onrender.com",  # your deployed frontend URL
+]
+
+# Add CORS middleware so frontend can call backend without blocking
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,      # allow these origins
+    allow_credentials=True,
+    allow_methods=["*"],        # allow all HTTP methods (GET, POST, etc)
+    allow_headers=["*"],        # allow all headers
+)
 
 @app.get("/")
-async def root():
-    return {"message": "Backend is running!"}        
-from fastapi import FastAPI
-
-app = FastAPI()
+def read_root():
+    return {"message": "Hello from backend!"}
 
 @app.get("/hello")
-async def hello():
-    return {"message": "Hello from backend!"}
+def hello():
+    return {"message": "hello from backend"}
